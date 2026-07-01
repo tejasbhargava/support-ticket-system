@@ -21,13 +21,10 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("Support Ticket System API")
+                        .title("SupportHub API")
                         .version("1.0")
-                        .description("Role-Based Support Ticket Platform"))
+                        .description("Role-Based Customer Support Ticketing System"))
                 .servers(List.of(
-                        new Server()
-                                .url("https://support-ticket-system-production-9564.up.railway.app")
-                                .description("Production"),
                         new Server()
                                 .url("http://localhost:8080")
                                 .description("Local")
