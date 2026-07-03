@@ -18,6 +18,7 @@ A production-grade **Customer Support Ticketing System** backend built with Java
 | Validation | Jakarta Validation |
 | Docs | Springdoc OpenAPI (Swagger UI) |
 | Build | Maven |
+| Containerization | Docker |
 
 ---
 
@@ -198,52 +199,86 @@ GET    /api/tickets/{id}/activity          AGENT, ADMIN
 GET    /api/dashboard                      ALL (role-specific response)
 ```
 
----
-
 ## Getting Started
 
 ### Prerequisites
+
 - Java 21
 - Maven
-- PostgreSQL
+- PostgreSQL (for local setup)
+- Docker Desktop (for Docker setup)
 
-### Setup
+---
 
-**1. Clone the repo**
+### Option 1 — Run Locally
+
+**1. Clone the repository**
+
 ```bash
 git clone https://github.com/yourusername/supporthub.git
 cd supporthub
 ```
 
 **2. Create the database**
+
 ```sql
 CREATE DATABASE ticsystemDB;
 ```
 
-**3. Configure `application.properties`**
-```properties
-spring.datasource.url=your url of postgres
-spring.datasource.username=postgres
-spring.datasource.password=yourpassword
+**3. Configure environment variables**
 
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-jwt.secret=your-secret-key-minimum-32-characters-long
-jwt.expiration=86400000
+```text
+DB_URL=jdbc:postgresql://localhost:5432/ticsystemDB
+DB_USERNAME=postgres
+DB_PASSWORD=your-password
+JWT_SECRET=your-secret-key
+JWT_EXPIRATION=86400000
 ```
 
-**4. Run**
+**4. Run the application**
+
 ```bash
 ./mvnw spring-boot:run
 ```
 
-**5. Access Swagger UI**
+---
+
+### Option 2 — Run with Docker
+
+**1. Build the Docker image**
+
+```bash
+docker build -t supporthub .
 ```
+
+**2. Run the container**
+
+```bash
+docker run -p 8080:8080 \
+-e DB_URL="jdbc:postgresql://host.docker.internal:5432/ticsystemDB" \
+-e DB_USERNAME="postgres" \
+-e DB_PASSWORD="your-password" \
+-e JWT_SECRET="your-secret-key" \
+-e JWT_EXPIRATION="86400000" \
+supporthub
+```
+
+---
+
+### API Documentation
+
+Swagger UI:
+
+```text
 http://localhost:8080/swagger-ui/index.html
 ```
 
-Categories are auto-seeded on first run (ACCOUNT, BILLING, TECHNICAL, GENERAL).
+Categories (`ACCOUNT`, `BILLING`, `TECHNICAL`, `GENERAL`) are automatically seeded on first run.
 
----
+## Performance
+
+- Seeded PostgreSQL database with **10,000 tickets**
+- Reduced paginated ticket retrieval latency by **78% (481 ms → 104 ms)**
+- Reduced API payload size by **99.3% (310 KB → 2.14 KB)** using DTO projections and pagination
+- Validated backend under **2,000 authenticated requests (0% failures)** using Apache JMeter
 
